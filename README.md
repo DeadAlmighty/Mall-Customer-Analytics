@@ -230,12 +230,4 @@ Run notebooks in order:
 - Add real-time data processing  
 - Advanced clustering (DBSCAN)  
 
-
----
-
-# 👨‍💻 Authors
-
-- Parth Ahuja  
- 
-
 ---
