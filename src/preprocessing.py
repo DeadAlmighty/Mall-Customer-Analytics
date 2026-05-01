@@ -37,6 +37,14 @@ def clean_data(df):
     return df
 
 
+def encode_gender(df):
+    """
+    Encode Gender column: M -> 1, F -> 0
+    """
+    df['Gender'] = df['Gender'].map({'M': 1, 'F': 0})
+    return df
+
+
 def normalize_data(df):
     """
     Normalize numerical columns using Min-Max Scaling
