@@ -31,7 +31,7 @@ st.set_page_config(
 st.markdown("""
     <style>
     .main-title {
-        font-size: 42px;
+        font-size: 40px;
         font-weight: 800;
         color: #2E4057;
         margin-bottom: 5px;
@@ -99,6 +99,13 @@ else:
     st.error("Default dataset not found at 'data/raw/mall_customers.csv'. Please upload a file.")
     st.stop()
 
+# Helper to display image safely
+def show_plot(path, caption):
+    if os.path.exists(path):
+        st.image(path, caption=caption, use_container_width=True)
+    else:
+        st.warning(f"Plot '{path}' not found. Please run the master pipeline to generate all plots.")
+
 # ----------------- Sidebar Navigation -----------------
 st.sidebar.image("https://img.icons8.com/clouds/200/brain.png", width=120)
 st.sidebar.title("Mall Analytics Dashboard")
@@ -142,40 +149,74 @@ if menu == "🏠 Overview & EDA":
     with tab_stats:
         st.dataframe(df_original.describe(), use_container_width=True)
         
-    st.markdown("### 📈 Interactive Distribution Visualizations")
-    col_plot1, col_plot2 = st.columns(2)
-    with col_plot1:
-        fig, ax = plt.subplots(figsize=(8, 5))
-        sns.histplot(data=df_original, x="Annual Income (k$)", kde=True, color="#2E4057", ax=ax)
-        ax.set_title("Annual Income Distribution")
-        st.pyplot(fig)
-        
-    with col_plot2:
-        fig, ax = plt.subplots(figsize=(8, 5))
-        sns.scatterplot(data=df_original, x="Annual Income (k$)", y="Spending Score (1-100)", hue="Gender", palette="Set1", alpha=0.8, ax=ax)
-        ax.set_title("Annual Income vs Spending Score")
-        st.pyplot(fig)
+    st.markdown("### 📈 Project EDA Plots (11 Plots Available)")
+    tab_dist, tab_corr, tab_rel, tab_box = st.tabs([
+        "Demographic Distributions", 
+        "Correlation Heatmaps", 
+        "Bivariate Relations", 
+        "Outlier Boxplots"
+    ])
+    
+    with tab_dist:
+        col_d1, col_d2 = st.columns(2)
+        with col_d1:
+            show_plot('outputs/plots/age_distribution.png', "Age Distribution Curve")
+            show_plot('outputs/plots/gender_distribution.png', "Gender Split (Male vs Female)")
+        with col_d2:
+            show_plot('outputs/plots/spending_distribution.png', "Spending Score Distribution")
+            show_plot('outputs/plots/feature_distributions.png', "General Overview of Distributions")
+            
+    with tab_corr:
+        col_c1, col_c2 = st.columns(2)
+        with col_c1:
+            show_plot('outputs/plots/correlation_matrix.png', "Global Feature Correlation Matrix")
+        with col_c2:
+            show_plot('outputs/plots/correlation_matrix_by_gender.png', "Feature Correlation Separated by Gender")
+            
+    with tab_rel:
+        col_r1, col_r2 = st.columns(2)
+        with col_r1:
+            show_plot('outputs/plots/income_vs_spending.png', "Income vs Spending Score Scatter plot")
+            show_plot('outputs/plots/gender_vs_spending.png', "Gender vs Spending habits")
+        with col_r2:
+            show_plot('outputs/plots/age_vs_spending.png', "Age vs Spending Score")
+            
+    with tab_box:
+        col_b1, col_b2 = st.columns(2)
+        with col_b1:
+            show_plot('outputs/plots/boxplots.png', "Syllabus Standard Boxplots Overview")
+        with col_b2:
+            show_plot('outputs/plots/income_boxplot.png', "Annual Income Boxplot Details")
 
 # ----------------- 🎯 Customer Clustering -----------------
 elif menu == "🎯 Customer Clustering":
     st.markdown("<div class='main-title'>🎯 Customer Segmentation (Clustering)</div>", unsafe_allow_html=True)
     st.markdown("<div class='sub-title'>Analyzing segments using KMeans, DBSCAN, Hierarchical, and GMM</div>", unsafe_allow_html=True)
     
-    # Display comparison metrics
     st.markdown("### 📊 Clustering Metrics Comparison")
     if os.path.exists('outputs/results/clustering_comparison.csv'):
         compare_df = pd.read_csv('outputs/results/clustering_comparison.csv')
         st.table(compare_df)
     else:
-        st.warning("Comparison metrics not found. Run the master pipeline first.")
+        st.warning("Comparison metrics not found.")
         
-    st.markdown("### 📈 Segmentation Visualization")
-    # Show pre-generated plots for exact layout mapping
-    if os.path.exists('outputs/plots/clustering_comparison.png'):
-        st.image('outputs/plots/clustering_comparison.png', caption="Clustering Algorithms Comparison", use_container_width=True)
-    else:
-        st.warning("Clustering visual comparison not found.")
-        
+    tab_models, tab_elbow = st.tabs(["Cluster Model Outputs", "Optimal Parameter Search"])
+    
+    with tab_models:
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            show_plot('outputs/plots/clustering_comparison.png', "Comparison of 4 Methods side-by-side")
+        with col_m2:
+            show_plot('outputs/plots/kmeans_clusters.png', "K-Means Cluster Segmentation details")
+            
+    with tab_elbow:
+        col_e1, col_e2 = st.columns(2)
+        with col_e1:
+            show_plot('outputs/plots/elbow_method.png', "Elbow Method Curve (WCSS)")
+            show_plot('outputs/plots/dendrogram.png', "Hierarchical Agglomerative Dendrogram")
+        with col_e2:
+            show_plot('outputs/plots/elbow_silhouette.png', "Elbow Method + Silhouette Scores Side-by-side")
+            
     st.markdown("### 💡 Identified Customer Segments (KMeans)")
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -192,20 +233,25 @@ elif menu == "📊 Classification Models":
     st.markdown("<div class='main-title'>📊 Classification Performance</div>", unsafe_allow_html=True)
     st.markdown("<div class='sub-title'>Predicting customer segment labels using 8 ML classifiers</div>", unsafe_allow_html=True)
     
-    tab_res, tab_cv, tab_conf = st.tabs(["Test Set Performance", "10-Fold Cross-Validation", "Confusion Matrices & Importance"])
+    tab_res, tab_cv, tab_conf, tab_feat = st.tabs([
+        "Test Set Performance", 
+        "10-Fold Cross-Validation", 
+        "Confusion Matrices", 
+        "Feature Importance"
+    ])
     
     with tab_res:
         if os.path.exists('outputs/results/classification_comparison.csv'):
             clf_df = pd.read_csv('outputs/results/classification_comparison.csv')
             st.dataframe(clf_df, use_container_width=True)
-            
-            # plot F1 score
-            fig, ax = plt.subplots(figsize=(10, 4))
-            sns.barplot(data=clf_df.sort_values(by="F1-Score", ascending=False), x="Model", y="F1-Score", palette="Blues_r", ax=ax)
-            plt.xticks(rotation=45)
-            st.pyplot(fig)
         else:
             st.warning("Classification results not found.")
+            
+        col_c1, col_c2 = st.columns(2)
+        with col_c1:
+            show_plot('outputs/plots/classification_accuracy_comparison.png', "Classification Accuracy comparison")
+        with col_c2:
+            show_plot('outputs/plots/classification_f1_comparison.png', "Classification F1-Score comparison")
             
     with tab_cv:
         if os.path.exists('outputs/results/classification_cv_results.csv'):
@@ -215,13 +261,14 @@ elif menu == "📊 Classification Models":
             st.warning("CV results not found.")
             
     with tab_conf:
-        col_img1, col_img2 = st.columns(2)
-        with col_img1:
-            if os.path.exists('outputs/plots/confusion_matrices.png'):
-                st.image('outputs/plots/confusion_matrices.png', caption="Confusion Matrices Comparison", use_container_width=True)
-        with col_img2:
-            if os.path.exists('outputs/plots/feature_importance_rf.png'):
-                st.image('outputs/plots/feature_importance_rf.png', caption="Random Forest Feature Importance", use_container_width=True)
+        show_plot('outputs/plots/confusion_matrices.png', "Multi-Model Confusion Matrices")
+        
+    with tab_feat:
+        col_f1, col_f2 = st.columns(2)
+        with col_f1:
+            show_plot('outputs/plots/feature_importance_rf.png', "Random Forest Model Feature Importance")
+        with col_f2:
+            show_plot('outputs/plots/feature_importance_gb.png', "Gradient Boosting Model Feature Importance")
 
 # ----------------- 📈 Regression Analysis -----------------
 elif menu == "📈 Regression Analysis":
@@ -234,11 +281,15 @@ elif menu == "📈 Regression Analysis":
         if os.path.exists('outputs/results/regression_comparison.csv'):
             reg_df = pd.read_csv('outputs/results/regression_comparison.csv')
             st.dataframe(reg_df, use_container_width=True)
-            
-            if os.path.exists('outputs/plots/best_regression_detail.png'):
-                st.image('outputs/plots/best_regression_detail.png', caption="Best Regression Residual Analysis", use_container_width=True)
         else:
             st.warning("Regression results not found.")
+            
+        col_reg1, col_reg2 = st.columns(2)
+        with col_reg1:
+            show_plot('outputs/plots/regression_plot.png', "Original Linear Regression trend line")
+            show_plot('outputs/plots/best_regression_detail.png', "Residual plot details for top regression model")
+        with col_reg2:
+            show_plot('outputs/plots/all_regression_lines.png', "Comparative fits for all 7 regression models")
             
     with tab_multi:
         if os.path.exists('outputs/results/regression_multi_feature.csv'):
@@ -246,6 +297,8 @@ elif menu == "📈 Regression Analysis":
             st.dataframe(reg_multi_df, use_container_width=True)
         else:
             st.warning("Multi-feature regression results not found.")
+            
+        show_plot('outputs/plots/regression_r2_comparison.png', "Regression R-squared comparison chart")
 
 # ----------------- 🔗 Association Rules -----------------
 elif menu == "🔗 Association Rules":
@@ -275,24 +328,26 @@ elif menu == "🧪 Advanced Analysis":
     st.markdown("<div class='main-title'>🧪 Advanced Analytical Techniques</div>", unsafe_allow_html=True)
     st.markdown("<div class='sub-title'>Showcasing dimensionality reduction, outlier detection, and statistical testing</div>", unsafe_allow_html=True)
     
-    st.markdown("### 📊 Dimension Reduction: PCA vs t-SNE")
-    if os.path.exists('outputs/plots/pca_vs_tsne.png'):
-        st.image('outputs/plots/pca_vs_tsne.png', use_container_width=True)
-    else:
-        st.warning("PCA vs t-SNE plot not found.")
+    tab_dim, tab_out, tab_stat = st.tabs([
+        "PCA vs t-SNE Projections", 
+        "Outlier Detection", 
+        "Statistical Paired t-tests"
+    ])
+    
+    with tab_dim:
+        show_plot('outputs/plots/pca_vs_tsne.png', "PCA vs t-SNE side-by-side 2D cluster projection")
+        show_plot('outputs/plots/pca_plot.png', "PCA dimension coordinates scatter")
         
-    st.markdown("### 🔍 Outlier Detection (Isolation Forest vs LOF)")
-    if os.path.exists('outputs/plots/outlier_detection.png'):
-        st.image('outputs/plots/outlier_detection.png', use_container_width=True)
-    else:
-        st.warning("Outlier detection plot not found.")
+    with tab_out:
+        show_plot('outputs/plots/outlier_detection.png', "Anomalies filtered by Isolation Forest vs Local Outlier Factor")
         
-    st.markdown("### 🧪 Paired t-Test Significance Matrix (p-values)")
-    if os.path.exists('outputs/results/pairwise_pvalues.csv'):
-        p_val_df = pd.read_csv('outputs/results/pairwise_pvalues.csv', index_col=0)
-        st.dataframe(p_val_df.style.background_gradient(cmap="coolwarm", axis=None), use_container_width=True)
-    else:
-        st.warning("Statistical significance matrix not found.")
+    with tab_stat:
+        st.markdown("### 🧪 Paired t-Test Significance Matrix (p-values)")
+        if os.path.exists('outputs/results/pairwise_pvalues.csv'):
+            p_val_df = pd.read_csv('outputs/results/pairwise_pvalues.csv', index_col=0)
+            st.dataframe(p_val_df.style.background_gradient(cmap="coolwarm", axis=None), use_container_width=True)
+        else:
+            st.warning("Statistical significance matrix not found.")
 
 # ----------------- 🔮 Real-Time Predictions -----------------
 elif menu == "🔮 Real-Time Predictions":
