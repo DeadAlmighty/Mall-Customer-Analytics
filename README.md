@@ -1,5 +1,5 @@
 # 🧠 DMW Project – Customer Behavior Analysis  
-### *Data Mining & Data Warehousing Capstone*
+### *Data Mining & Data Warehousing Project*
 
 ---
 
@@ -225,15 +225,16 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### Run the Notebooks in Order:
-You can also run the full pipeline notebook directly:
+### Run the Full Pipeline
+You can run the end-to-end command-line pipeline to regenerate all plots, tables, and reports:
+```bash
+python run_pipeline.py
 ```
-notebooks/11_advanced_analysis.ipynb
-```
-Or explore individual steps:
-```
-01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10
-```
+
+### Run the Notebooks:
+You can also run the full pipeline step-by-step in Jupyter:
+- Master Notebook: `notebooks/11_advanced_analysis.ipynb`
+- Individual Notebooks: `01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10`
 
 ---
 
@@ -244,22 +245,3 @@ Or explore individual steps:
 - **Demographic spending trends**: Support Vector Regression (SVR) and Polynomial Regression show strong fitting when predicting spending score from Age + Income.
 - **Apriori Association Rules**: Strong associations show distinct cluster-based habits (e.g. older high-income buyers are conservative savers).
 - **Outliers**: Isolation Forest and Local Outlier Factor successfully filter ~5% anomalies.
-
----
-
-# 🏆 Project Highlights
-
-✔ Covers ALL Capstone Syllabus Modules  
-✔ Industry-standard Modular Architecture (`src/`)  
-✔ Multi-model Comparison (8 Classifiers, 7 Regressors, 4 Clustering methods)  
-✔ Statistical Significance Validation (Paired t-tests)  
-✔ Data Warehouse + OLAP Slice/Dice/Roll-up  
-✔ Complete interactive Streamlit dashboard  
-
----
-
-# 🔮 Future Improvements
-
-- Integrate real-time API streaming datasets
-- Build a personalized product recommendation engine for each segment
-- Expand customer dimension features with loyalty tier history data

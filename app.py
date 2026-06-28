@@ -125,12 +125,12 @@ menu = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("**DMW Capstone Project**  \nVersion 2.0 (Upgraded)")
+st.sidebar.markdown("**DMW Project**  \nVersion 2.0 (Upgraded)")
 
 # ----------------- 🏠 Overview & EDA -----------------
 if menu == "🏠 Overview & EDA":
     st.markdown("<div class='main-title'>🧠 Customer Behavior Analytics</div>", unsafe_allow_html=True)
-    st.markdown("<div class='sub-title'>Data Warehousing & Data Mining Capstone Project</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sub-title'>Data Warehousing & Data Mining Project</div>", unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
