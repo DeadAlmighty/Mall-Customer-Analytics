@@ -161,7 +161,6 @@ if menu == "🏠 Overview & EDA":
         col_d1, col_d2 = st.columns(2)
         with col_d1:
             show_plot('outputs/plots/age_distribution.png', "Age Distribution Curve")
-            show_plot('outputs/plots/gender_distribution.png', "Gender Split (Male vs Female)")
         with col_d2:
             show_plot('outputs/plots/spending_distribution.png', "Spending Score Distribution")
             show_plot('outputs/plots/feature_distributions.png', "General Overview of Distributions")
