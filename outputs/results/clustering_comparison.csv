@@ -1,0 +1,5 @@
+Model,n_clusters,Silhouette,Davies-Bouldin,Calinski-Harabasz
+KMeans,5,0.3633,0.8897,1866.98
+DBSCAN,1,,,
+Hierarchical,5,0.338,0.8948,1694.35
+GMM,5,0.3314,0.8931,1618.94

@@ -1,0 +1,9 @@
+Model,CV_Accuracy_Mean,CV_Accuracy_Std,CV_F1_Mean,CV_F1_Std
+Gradient Boosting,0.9633,0.0159,0.9634,0.0158
+Random Forest,0.9613,0.0143,0.9613,0.0143
+Decision Tree,0.9542,0.0209,0.9542,0.0208
+Naive Bayes,0.9318,0.0247,0.9313,0.0249
+MLP Neural Net,0.9175,0.0338,0.9169,0.0347
+Logistic Regression,0.7944,0.0396,0.7936,0.0392
+KNN,0.7923,0.0391,0.788,0.0394
+SVM,0.6172,0.0382,0.57,0.0387
