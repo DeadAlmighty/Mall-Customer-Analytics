@@ -47,6 +47,10 @@ st.markdown("""
         padding: 15px;
         border-left: 5px solid #2E4057;
         margin-bottom: 10px;
+        color: #1A1A1A !important;
+    }
+    .metric-card h4, .metric-card h2, .metric-card p {
+        color: #1A1A1A !important;
     }
     .cluster-card {
         background-color: #F0F4F8;
@@ -54,6 +58,10 @@ st.markdown("""
         padding: 15px;
         border-left: 5px solid #1070C0;
         margin-bottom: 10px;
+        color: #1A1A1A !important;
+    }
+    .cluster-card h4, .cluster-card h2, .cluster-card p {
+        color: #1A1A1A !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -76,7 +84,7 @@ def get_cached_data(filepath):
     
     # Run K-means to assign clusters
     X_cluster = df_norm[['Annual Income (k$)', 'Spending Score (1-100)']].values
-    kmeans, labels = apply_kmeans(X_cluster, n_clusters=5)
+    labels, kmeans = apply_kmeans(X_cluster, n_clusters=5)
     
     df_norm['Cluster'] = labels
     df_orig['Cluster'] = labels
