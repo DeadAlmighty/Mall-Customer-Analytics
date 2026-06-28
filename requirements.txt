@@ -6,3 +6,4 @@ seaborn
 mlxtend
 scipy
 jupyter
+streamlit
